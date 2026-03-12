@@ -12,12 +12,16 @@
             background: #ffe6ea;
             background-image: radial-gradient(#ffb3c6 2.5px, transparent 2.5px); background-size: 30px 30px;
             font-family: 'Fredoka', sans-serif;
-            height: 100vh; width: 100vw; overflow: hidden;
+            /* GANTI DI SINI */
+            height: 100vh; height: 100dvh; 
+            width: 100vw; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
         }
 
         #rotate-warning {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; 
+            /* GANTI DI SINI */
+            height: 100vh; height: 100dvh;
             background: #ffb8b8; z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
             color: white; text-align: center; padding: 20px;
         }
@@ -35,7 +39,8 @@
         }
 
         .book {
-            position: relative; width: 90vw; max-width: 900px; height: 85vh; max-height: 600px;
+            position: relative; width: 90vw; max-width: 900px; 
+            height: 80vh; height: 80dvh; max-height: 600px;
             transform-style: preserve-3d; transform: rotateX(2deg) rotateY(-2deg);
         }
 
