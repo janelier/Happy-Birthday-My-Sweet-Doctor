@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hsppy Birthday My Sweet Doctor!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: #ffe6ea;
+            background-image: radial-gradient(#ffb3c6 2.5px, transparent 2.5px); background-size: 30px 30px;
+            font-family: 'Fredoka', sans-serif;
+            height: 100vh; width: 100vw; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        #rotate-warning {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #ffb8b8; z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
+            color: white; text-align: center; padding: 20px;
+        }
+        .phone-icon { font-size: 15vmin; animation: rotatePhone 2s infinite ease-in-out; margin-bottom: 20px; }
+        @keyframes rotatePhone { 0%, 100% { transform: rotate(-90deg); } 50% { transform: rotate(0deg); } }
+
+        @media screen and (orientation: portrait) {
+            #rotate-warning { display: flex !important; }
+            #app-container { display: none !important; }
+        }
+
+        #app-container {
+            width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+            perspective: 2000px; 
+        }
+
+        .book {
+            position: relative; width: 90vw; max-width: 900px; height: 85vh; max-height: 600px;
+            transform-style: preserve-3d; transform: rotateX(2deg) rotateY(-2deg);
+        }
+
+        .page {
+            width: 50%; height: 100%; position: absolute; right: 0; top: 0;
+            transform-style: preserve-3d; transform-origin: left center;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+        }
+
+        .page *, .front, .back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+
+        .front, .back {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            background: #fffdf9; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 3vmin; box-shadow: inset 5px 0 20px rgba(0,0,0,0.05), 5px 10px 25px rgba(255, 154, 158, 0.3);
+        }
+
+        .front:not(.cover-page) { border: 3px dashed #ffc0cb; border-radius: 5px 20px 20px 5px; }
+        .back:not(.back-cover-page) {
+            transform: rotateY(180deg);
+            border: 3px dashed #ffc0cb; border-radius: 20px 5px 5px 20px;
+            background: #fff7f9;
+        }
+
+        .cover-page {
+            background: #ff7675 !important; border: none !important; border-radius: 5px 20px 20px 5px;
+            box-shadow: inset 15px 0 30px rgba(0,0,0,0.2), 5px 10px 25px rgba(255, 154, 158, 0.5);
+        }
+        .cover-page::before {
+            content: ''; position: absolute; left: 0; top: 0; width: 5vmin; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0.2), rgba(0,0,0,0.1) 80%, transparent);
+            border-radius: 5px 0 0 5px; z-index: 1;
+        }
+
+        .back-cover-page {
+            transform: rotateY(180deg);
+            background: #ff7675 !important; border: none !important; border-radius: 20px 5px 5px 20px !important;
+            box-shadow: inset -15px 0 30px rgba(0,0,0,0.2), -5px 10px 25px rgba(255, 154, 158, 0.5);
+        }
+        .back-cover-page::before {
+            content: ''; position: absolute; right: 0; top: 0; width: 5vmin; height: 100%;
+            background: linear-gradient(to left, rgba(255,255,255,0.2), rgba(0,0,0,0.1) 80%, transparent);
+            border-radius: 0 5px 5px 0; z-index: 1;
+        }
+
+        .page.flipped { transform: rotateY(-180deg); }
+
+        .content-wrap { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2;}
+
+        h1 { font-family: 'Caveat', cursive; color: #ff4757; font-size: clamp(2rem, 6vmin, 3.5rem); text-align: center; line-height: 1.1; margin-bottom: 2vmin;}
+        p { color: #57606f; font-size: clamp(0.8rem, 2.5vmin, 1.2rem); text-align: center; line-height: 1.3; font-weight: 600; width: 95%;}
+
+
+        .cover-page h1, .back-cover-page h1 { color: #fff; font-size: clamp(3rem, 9vmin, 5rem); text-shadow: 3px 3px 0 #d63031; margin-bottom: 0; z-index: 3;}
+        .cover-page p, .back-cover-page p { color: #ffeaa7; font-size: clamp(1rem, 3vmin, 1.5rem); text-shadow: 1px 1px 0 #d63031; z-index: 3;}
+
+        .photo-frame {
+            background: #fff; padding: 2vmin 2vmin 4vmin 2vmin; border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); border: 1px solid #ffeaa7;
+            margin-bottom: 2vmin; transform: rotate(-2deg);
+        }
+        .photo-frame.right { transform: rotate(3deg); }
+        .photo-frame img { width: 38vmin; height: 38vmin; object-fit: cover; border-radius: 4px; }
+
+        .sticker { position: absolute; font-size: clamp(2rem, 6vmin, 3rem); z-index: 10; }
+        .bounce { animation: bounceCute 2s infinite; }
+        .wiggle { animation: wiggleCute 3s infinite; }
+
+        @keyframes bounceCute { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes wiggleCute { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
+
+        .tap-hint { font-size: clamp(0.7rem, 2vmin, 1rem); color: #ff4757; background: #fff; padding: 1vmin 3vmin; border-radius: 20px; animation: bounceCute 2s infinite; font-weight: 700; margin-top: 5vmin; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        
+        .apology { background: #ffeaa7; padding: 2vmin; border-radius: 10px; border: 2px dashed #fdcb6e; margin-top: 2vmin; width: 90%;}
+        .apology p { color: #d63031; font-family: 'Caveat', cursive; font-size: clamp(1rem, 3.5vmin, 1.5rem); margin: 0;}
+        
+        .nav-zone { position: absolute; bottom: 1vmin; width: 100%; text-align: center; font-size: clamp(0.6rem, 1.5vmin, 0.8rem); color: #b2bec3; pointer-events: none;}
+
+        #easter-egg-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 10000;
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .modal-box {
+            background: #fff; border-radius: 20px; padding: 4vmin; width: 85vw; max-width: 450px;
+            text-align: center; border: 4px dashed #ff7675; position: relative;
+            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .modal-box h2 { font-family: 'Caveat', cursive; color: #d63031; font-size: clamp(2rem, 5vmin, 2.5rem); margin-bottom: 2vmin;}
+        .modal-box p { color: #2d3436; font-size: clamp(0.9rem, 2.5vmin, 1.1rem); margin-bottom: 2vmin; }
+        .btn-klaim {
+            background: #ff7675; color: white; border: none; padding: 2vmin 4vmin; border-radius: 30px;
+            font-size: clamp(1rem, 2.5vmin, 1.2rem); font-family: 'Fredoka', sans-serif; font-weight: 600;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(255, 118, 117, 0.4); margin-top: 2vmin;
+            animation: bounceCute 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="./lagu-kita.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="rotate-warning">
+        <div class="phone-icon">📱</div>
+        <h2 style="font-family: 'Fredoka', sans-serif;">Putar HP Kamu Sayang!</h2>
+        <p style="margin-top: 10px; font-size: 1.2rem;">Ini Baru Bisa di Buka Halo HP Kamu Dimiringin hehe (ini yang bikin lama) 💖</p>
+    </div>
+
+    <div id="easter-egg-modal">
+        <div class="modal-box" id="modal-box">
+            <div class="sticker wiggle" style="top: -6vmin; left: 50%; transform: translateX(-50%);">🎁</div>
+            <h2>EHH INI APA YAAA..</h2>
+            <p>Sstt... Kamu nemu <b>Voucher VIP</b> yeyyy!!!</p>
+            <p style="font-weight: bold; color: #ff4757; font-size: clamp(1.1rem, 3vmin, 1.3rem); background: #ffeaa7; padding: 2vmin; border-radius: 10px;">
+                Bebas request mau apaa ajaa 🍝✨
+            </p>
+            <p style="font-size: clamp(0.8rem, 2vmin, 0.9rem); color: #636e72; margin-top: 2vmin; font-style: italic;">
+                (Plus doa khusus supaya kitaa selalu bahagia okeii!! 🐩💖)
+            </p>
+            <button class="btn-klaim" onclick="closeEasterEgg()">Klaim Voucher!</button>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <div class="book" id="myBook"></div>
+    </div>
+
+    <script>
+        const bookData = [
+            {
+                isCover: true,
+                frontHTML: `
+                    <div class="content-wrap">
+                        <div class="sticker wiggle" style="top: 5vmin; left: 5vmin;">🐻</div>
+                        <div class="sticker bounce" style="bottom: 15vmin; right: 5vmin;">✨</div>
+                        <h1>Happy<br>Birthday!</h1>
+                        <p>To My Favorite Girl</p>
+                        <div class="tap-hint">TAP KANAN BUKA BUKU 👉</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <h1>Prolog 💌</h1>
+                        <div class="sticker bounce" style="top: 2vmin; right: 2vmin;">🐝</div>
+                        <div class="photo-frame"><img src="https://via.placeholder.com/400/fad0c4?text=Foto+1" alt="Pic1"></div>
+                        <p>Awal mula semua cerita indah kita. Makasih udah kasih warna baru di hidupku ya.</p>
+                        <div class="nav-zone">1</div>
+                    </div>`
+            },
+            {
+                frontHTML: `
+                    <div class="content-wrap">
+                        <h1>Cantikku 🌷</h1>
+                        <div class="sticker wiggle" style="bottom: 5vmin; left: 2vmin;">💖</div>
+                        <div class="photo-frame right"><img src="https://via.placeholder.com/400/a8edea?text=Foto+2" alt="Pic2"></div>
+                        <p>Setiap lihat senyum kamu di foto ini, semua capekku rasanya langsung hilang. Sumpah.</p>
+                        <div class="nav-zone">2</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <h1>Silly Face 👻</h1>
+                        <div class="sticker bounce" style="top: 5vmin; right: 5vmin;">🎀</div>
+                        <div class="photo-frame"><img src="https://via.placeholder.com/400/ff9a9e?text=Foto+3" alt="Pic3"></div>
+                        <p>Sifat random kamu yang kayak gini nih yang bikin aku gak pernah bisa bosen. Gemes!</p>
+                        <div class="nav-zone">3</div>
+                    </div>`
+            },
+
+            {
+                frontHTML: `
+                    <div class="content-wrap">
+                        <h1>My Safe Place 🏡</h1>
+                        <div class="sticker wiggle" style="top: 2vmin; left: 2vmin;">💘</div>
+                        <div class="photo-frame right"><img src="https://via.placeholder.com/400/a18cd1?text=Foto+4" alt="Pic4"></div>
+                        <p>Tempat curhat terbaik. Cuma sama kamu aku bisa jadi diriku sendiri tanpa takut di-judge.</p>
+                        <div class="nav-zone">4</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <h1>Perfect Fit 🧩</h1>
+                        <div class="sticker bounce" style="bottom: 5vmin; left: 5vmin;">⭐</div>
+                        <div class="photo-frame"><img src="https://via.placeholder.com/400/fbc2eb?text=Foto+5" alt="Pic5"></div>
+                        <p>Secara teori kepribadian, sifat kita itu saling melengkapi loh. Udah takdir namanya hehe.</p>
+                        <div class="nav-zone">5</div>
+                    </div>`
+            },
+
+            {
+                frontHTML: `
+                    <div class="content-wrap">
+                        <h1>Team Work ⚔️</h1>
+                        <div class="photo-frame right"><img src="https://via.placeholder.com/400/8fd3f4?text=Foto+6" alt="Pic6"></div>
+                        <p>Apapun masalahnya ke depan, kita hadapin bareng-bareng ya. Aku selalu di pihak kamu.</p>
+                        <div class="nav-zone">6</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <h1>Growing Up 🎓</h1>
+                        <div class="sticker wiggle" style="top: 5vmin; right: 5vmin;">👑</div>
+                        <div class="photo-frame"><img src="https://via.placeholder.com/400/ffecd2?text=Foto+7" alt="Pic7"></div>
+                        <p>Wah udah 18 tahun nih. Makin dewasa pemikirannya, tapi tetep jadi kesayanganku yang manja ya.</p>
+                        <div class="nav-zone">7</div>
+                    </div>`
+            },
+
+            {
+                frontHTML: `
+                    <div class="content-wrap">
+                        <h1>Infinity & Beyond 🚀</h1>
+                        <div class="sticker bounce" style="top: 2vmin; left: 5vmin;">🧸</div>
+                        <div class="photo-frame right"><img src="https://via.placeholder.com/400/e0c3fc?text=Foto+8" alt="Pic8"></div>
+                        <p>Panjang umur hal-hal baik buat kita. Pokoknya aku sayang banget sama kamu!</p>
+                        <div class="nav-zone">8</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <div class="sticker bounce" style="font-size: 6vmin;">💌</div>
+                        <h1 style="margin-top: 2vmin;">Happy 18th! 🎂</h1>
+                        <div class="apology">
+                            <p>Maaf banget ya kado tgl 26 Feb kemarin telat 🥺. Aku sampe ngulik kode super ribet ini khusus buat kamu. I Love You!</p>
+                        </div>
+                        <div class="nav-zone">9</div>
+                    </div>`
+            },
+
+            {
+                isBackCover: true,
+                frontHTML: `
+                    <div class="content-wrap">
+                        <div class="sticker wiggle" style="font-size: 8vmin;">📝</div>
+                        <p style="font-family: 'Caveat', cursive; font-size: clamp(1.5rem, 5vmin, 2rem); margin-top: 5vmin; color: #ff7675;">
+                            "The best is yet to come."
+                        </p>
+                        <p style="font-size: clamp(0.7rem, 2vmin, 1rem); margin-top: 10vmin; color: #a4b0be;">
+                            Made with pure code and love <br>by Azar.
+                        </p>
+                        <div class="nav-zone">10</div>
+                    </div>`,
+                backHTML: `
+                    <div class="content-wrap">
+                        <h1 style="font-size: clamp(2rem, 8vmin, 4rem);">The End.</h1>
+                        <p>Thanks for reading!</p>
+                        
+                        <div class="barcode bounce" onclick="openEasterEgg(event)" style="cursor: pointer; position: absolute; bottom: 5vmin; right: 8vmin; z-index: 20;">
+                            <div style="background: white; padding: 1vmin 2vmin; border-radius: 5px; color: black; font-family: monospace; font-size: clamp(0.7rem, 2vmin, 1rem); font-weight: bold; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                                ||| | ||| || ||<br>TAP TO SCAN
+                            </div>
+                        </div>
+                    </div>`
+            }
+        ];
+
+        const bookContainer = document.getElementById('myBook');
+        
+        bookData.forEach((sheet, index) => {
+            const frontClass = sheet.isCover ? 'front cover-page' : 'front';
+            const backClass = sheet.isBackCover ? 'back back-cover-page' : 'back';
+            const html = `
+                <div class="page" id="sheet-${index}">
+                    <div class="${frontClass}">${sheet.frontHTML}</div>
+                    <div class="${backClass}">${sheet.backHTML}</div>
+                </div>
+            `;
+            bookContainer.insertAdjacentHTML('beforeend', html);
+        });
+
+        const pages = document.querySelectorAll('.page');
+        const totalSheets = pages.length;
+        let currentSheet = 0; 
+        let isMusicPlaying = false;
+        const bgMusic = document.getElementById('bg-music');
+
+        pages.forEach((page, index) => {
+            page.style.zIndex = totalSheets - index; 
+        });
+
+        document.getElementById('app-container').addEventListener('click', function(e) {
+            
+            if (!isMusicPlaying) {
+                bgMusic.play().catch(err => console.log("Autoplay diblokir", err));
+                isMusicPlaying = true;
+            }
+
+            const clickX = e.clientX;
+            const screenCenter = window.innerWidth / 2;
+
+            if (clickX > screenCenter) {
+                if (currentSheet < totalSheets) {
+                    let sheetToFlip = pages[currentSheet];
+                    sheetToFlip.classList.add('flipped');
+                    
+                    let storedIndex = currentSheet;
+                    setTimeout(() => {
+                        sheetToFlip.style.zIndex = storedIndex + 1;
+                    }, 600);
+                    
+                    currentSheet++;
+                }
+            } else {
+                if (currentSheet > 0) {
+                    currentSheet--; 
+                    let sheetToUnflip = pages[currentSheet];
+                    sheetToUnflip.classList.remove('flipped');
+                    
+                    let storedIndex = currentSheet;
+                    setTimeout(() => {
+                        sheetToUnflip.style.zIndex = totalSheets - storedIndex;
+                    }, 600);
+                }
+            }
+        });
+
+        const modal = document.getElementById('easter-egg-modal');
+        const modalBox = document.getElementById('modal-box');
+
+        function openEasterEgg(event) {
+            event.stopPropagation(); 
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modalBox.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeEasterEgg() {
+            modal.style.opacity = '0';
+            modalBox.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 400);
+        }
+    </script>
+</body>
+</html>
